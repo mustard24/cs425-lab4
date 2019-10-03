@@ -1,5 +1,5 @@
 var Lab4 = ( function() {
-
+    
     return {
 
         convert: function(rates) {
@@ -15,8 +15,20 @@ var Lab4 = ( function() {
              * currency codes, separated by colons and formatted to two decimal
              * places.  (See the screenshot given with this assignment.)
              */
-
+            var output = "";
             // INSERT YOUR CODE HERE
+            i = 0;
+            var rateList = rates["rates"];
+            var numConvert = $("#input").val().trim();
+            
+            for(var key in rateList){ //rates.rates.length?
+                var convertMath = numConvert * rateList[key];
+                output += "<p>" + key + " : " + convertMath + '<p>';
+                
+            }
+            //output += "<p>" + rates.dates(0) + '<p>'; // This makes it so it will not print.
+            $('#output').html( output);
+            //$('#output').html( "jQuery rsion: " + $().jquery );
 
         },
         
@@ -52,6 +64,7 @@ var Lab4 = ( function() {
             /* Output the current version of jQuery (for diagnostic purposes) */
             
             $('#output').html( "jQuery Version: " + $().jquery );
+            
  
         }
 

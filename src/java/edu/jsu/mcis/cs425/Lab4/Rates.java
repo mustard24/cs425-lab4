@@ -116,12 +116,28 @@ public class Rates {
              *
              * *** INSERT YOUR CODE HERE ***
              */
-            
+            iterator.next();
+            while (iterator.hasNext())
+            {
+                row = iterator.next();
+                String code = row[1];
+                rates.put(code ,Double.parseDouble(row[2]));
+                    
+                    
+                
+                
+            }
+            String baseCurrency = "USD";
+            String dateOfPull = "2019-09-20";
             json.put("rates", rates);
+            json.put("base", baseCurrency);
+            json.put("date", dateOfPull);
             
             /* Parse top-level container to a JSON string */
             
             results = JSONValue.toJSONString(json);
+            System.err.println(results);
+            System.out.println(results);
             
         }
         catch (Exception e) { System.err.println( e.toString() ); }
