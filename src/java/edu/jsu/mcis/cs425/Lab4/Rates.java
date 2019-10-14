@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import java.sql.*;
 
 public class Rates {
     
@@ -91,7 +92,72 @@ public class Rates {
         return (s.toString());
         
     }
-    
+    public static String getRatesAsJson(String code) {
+        String server = "jdbc:mysql://localhost:3306/lab4b";
+        //String username ="jdbc/db_pool";
+        //String password = "CS425!Lab3B";
+        String username = "root";
+        String password = "CS310";
+        String query = "SELECT * FROM rates WHERE code =  ?";
+        String results = "";
+        PreparedStatement stmt = null;
+        Boolean hasresults = false;
+        ResultSet resultset = null;
+        JSONObject json = new JSONObject();
+        JSONObject rates = new JSONObject();
+       
+        int listLength = 0;
+        try{
+            Class.forName("com.mysql.jdbc.Driver").newInstance(); 
+            Connection conn = DriverManager.getConnection(server, username, password);
+            if( code == null){
+                stmt = conn.prepareStatement("SELECT * FROM rates");
+                System.out.println("Made into null statement!");
+                hasresults = stmt.execute();
+            
+                resultset = stmt.getResultSet();
+            
+                while ( hasresults ) {
+                    System.out.println("Made into hasresults statement!");
+                    resultset.next();
+                    rates.put(resultset.getString("code"), resultset.getDouble("rate"));
+                    
+                }
+                    stmt.close();
+            }
+            else{
+                stmt = conn.prepareStatement(query);
+                stmt.setString(1 , code);
+                hasresults = stmt.execute();
+            
+                resultset = stmt.getResultSet();
+
+                if ( hasresults ) {
+                    
+                    resultset.next();
+                    
+                    
+                    rates.put(resultset.getString("code"), resultset.getDouble("rate"));
+                
+                }
+                stmt.close();
+            }
+
+        }
+        catch(Exception e){
+            System.out.println(e);
+            rates.put("Broken", 101);
+        }
+        
+        String baseCurrency = "USD";
+        String dateOfPull = "2019-09-20";
+        json.put("rates", rates);
+        json.put("base", baseCurrency);
+        json.put("date", dateOfPull);
+        results = JSONValue.toJSONString(json);
+        System.out.println(code + ":)");
+        return (results.trim());
+    }
     public static String getRatesAsJson(List<String[]> csv) {
         
         String results = "";
